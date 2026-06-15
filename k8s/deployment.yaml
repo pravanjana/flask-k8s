@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-deployment
+  namespace: flask-prod
   labels:
     app: flask
 spec:
@@ -16,12 +17,14 @@ spec:
     spec:
       containers:
       - name: flask
-        image: gcr.io/k8s-learning-499223/flask-app:1.0.0
+        image: gcr.io/k8s-learning-499223/flask-app:3.0.0
         ports:
         - containerPort: 5000
-        env:
-        - name: APP_VERSION
-          value: "1.0.0"
+        envFrom:
+        - configMapRef:
+            name: flask-config
+        - secretRef:
+            name: flask-secrets
         resources:
           requests:
             memory: "64Mi"
